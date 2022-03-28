@@ -20,7 +20,7 @@ in_features = model.roi_heads.box_predictor.cls_score.in_features
 # replace the pre-trained head with a new one
 model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
-checkpoint = torch.load('/home/u1698461/Documents/ImpPersonalDocs/send/al/logo_detection.model')
+checkpoint = torch.load('path/to/model/logo_detection.model')
 model.load_state_dict(checkpoint["model_state_dict"])
 
 from torchvision import transforms as T
