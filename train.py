@@ -6,14 +6,12 @@ import pickle
 
 class LogoDataset(torch.utils.data.Dataset):
     def __init__(self,transforms, dataset):
-#         self.root = root
         self.transforms = transforms
         with open(dataset, 'rb') as f:
             self.dataset = pickle.load(f)
         # load all image files, sorting them to
         # ensure that they are aligned
-        self.imgs = list(sorted(os.listdir("/home/u1698461/Documents/ImpPersonalDocs/send/al/images")))
-#         self.masks = list(sorted(os.listdir(os.path.join(root, "PedMasks"))))
+        self.imgs = list(sorted(os.listdir("path/to/images")))
 
     def __getitem__(self, idx):
         # load images and masks
@@ -89,7 +87,7 @@ def get_transform(train):
 
 
 # model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-dataset_path = "/home/u1698461/Documents/ImpPersonalDocs/send/al/dataset.pkl"
+dataset_path = "path/to/dataset.pkl"
 dataset = LogoDataset(get_transform(train=True), dataset_path)
 data_loader = torch.utils.data.DataLoader(
  dataset, batch_size=2, shuffle=True, num_workers=4,
