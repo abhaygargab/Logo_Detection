@@ -9,38 +9,20 @@ class LogoDataset(torch.utils.data.Dataset):
         self.transforms = transforms
         with open(dataset, 'rb') as f:
             self.dataset = pickle.load(f)
-        # load all image files, sorting them to
-        # ensure that they are aligned
-        self.imgs = list(sorted(os.listdir("path/to/images")))
+        self.imgs = list(sorted(os.listdir("/home/u1698461/Documents/ImpPersonalDocs/send/al/images")))
 
     def __getitem__(self, idx):
-        # load images and masks
-#         img_path = os.path.join(self.root, "PNGImages", self.imgs[idx])
         img_path = self.dataset[idx][0]
         img = Image.open(img_path).convert("RGB")
-
-        # get bounding box coordinates for each mask
-#         num_objs = len(obj_ids)
-        num_objs = 1
-        pos = self.dataset[idx][1]
-        boxes = []
-        for i in range(num_objs):
-#             pos = np.where(masks[i])
-            xmin = np.min(pos[0])
-            xmax = np.max(pos[2])
-            ymin = np.min(pos[1])
-            ymax = np.max(pos[3])
-            boxes.append([xmin, ymin, xmax, ymax])
+        boxes = self.dataset[idx][1]
+        num_objs = len(boxes)
 
         # convert everything into a torch.Tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
-        # there is only one class
         labels = torch.ones((num_objs,), dtype=torch.int64)
-#         masks = torch.as_tensor(masks, dtype=torch.uint8)
 
         image_id = torch.tensor([idx])
         area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
-        # suppose all instances are not crowd
         iscrowd = torch.zeros((num_objs,), dtype=torch.int64)
 
         target = {}
@@ -87,20 +69,20 @@ def get_transform(train):
 
 
 # model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-dataset_path = "path/to/dataset.pkl"
+dataset_path = "dataset.pkl"
 dataset = LogoDataset(get_transform(train=True), dataset_path)
 data_loader = torch.utils.data.DataLoader(
  dataset, batch_size=2, shuffle=True, num_workers=4,
  collate_fn=utils.collate_fn)
-# For Training
-images,targets = next(iter(data_loader))
-images = list(image for image in images)
-targets = [{k: v for k, v in t.items()} for t in targets]
-output = model(images,targets)   # Returns losses and detections
-# For inference
-model.eval()
-x = [torch.rand(3, 300, 400), torch.rand(3, 500, 400)]
-predictions = model(x)           # Returns predictions
+# # For Training
+# images,targets = next(iter(data_loader))
+# images = list(image for image in images)
+# targets = [{k: v for k, v in t.items()} for t in targets]
+# output = model(images,targets)   # Returns losses and detections
+# # For inference
+# model.eval()
+# x = [torch.rand(3, 300, 400), torch.rand(3, 500, 400)]
+# predictions = model(x)           # Returns predictions
 
 
 
@@ -130,9 +112,6 @@ data_loader = torch.utils.data.DataLoader(
 data_loader_test = torch.utils.data.DataLoader(
     dataset_test, batch_size=1, shuffle=False, num_workers=4,
     collate_fn=utils.collate_fn)
-
-# get the model using our helper function
-#     model = get_model_instance_segmentation(num_classes)
 
 # move model to the right device
 model.to(device)
