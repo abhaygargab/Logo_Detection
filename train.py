@@ -9,7 +9,7 @@ class LogoDataset(torch.utils.data.Dataset):
         self.transforms = transforms
         with open(dataset, 'rb') as f:
             self.dataset = pickle.load(f)
-        self.imgs = list(sorted(os.listdir("/home/u1698461/Documents/ImpPersonalDocs/send/al/images")))
+        self.imgs = list(sorted(os.listdir("./images")))
 
     def __getitem__(self, idx):
         img_path = self.dataset[idx][0]
